@@ -1,96 +1,42 @@
-@import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Timmana:wght@400&display=swap");
-body {
-  margin: 0;
-  line-height: normal;
-}
- 
-.Navbar {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-.Navg{
-  position: absolute;
-  top: 0px;
-  width: 100%;
-  height: 100px;
-  background-image: linear-gradient(rgb(43, 127, 255), rgba(255, 255, 255, 0));
-}
-.screwyio {
-  position: absolute;
-  top: 34px;
-  left: 53px;
-  font-size: 54px;
-  line-height: 91%;
-  font-family: var(--font-urbanist);
-  text-align: left;
-  text-shadow: 0 6.8318586349487305px 6.83px rgba(0, 0, 0, 0.4);
-  color: var(--color-white);
-}
-.about,
-.performance {
-  position: absolute;
-  top: 58px;
-  left: 348px;
-  line-height: 91%;
-  font-family: var(--font-timmana);
-  font-size: var(--font-size-5xl);
-  color: var(--color-white);
-  cursor: pointer;
-  border: 0;
-  display: inline-block;
-  border: none;
-  background-color: inherit;
-}
-.performance {
-  left: 454px;
-}
-.get-started {
-  position: relative;
-  font-size: 32px;
-  font-family: var(--font-urbanist);
-  color: var(--color-white);
-  text-align: left;
-}
-.get-started-wrapper {
-  cursor: pointer;
-  border: 0;
-  padding: 9px var(--padding-base) var(--padding-base);
-  background-color: var(--color-gray);
-  position: absolute;
-  top: 34px;
-  left: 1079px;
-  border-radius: var(--br-5xl);
-  backdrop-filter: blur(25px);
-  width: 306px;
-  height: 54px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-.performance.about.get-started-wrapper:hover{
-  background-color: aliceblue;
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
-:root {
-  /* fonts */
-  --font-urbanist: Urbanist;
-  --font-timmana: Timmana;
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
 
-  /* font sizes */
-  --font-size-5xl: 24px;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-  /* Colors */
-  --color-gray: rgba(255, 255, 255, 0.1);
-  --color-white: #fff;
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
 
-  /* Paddings */
-  --padding-base: 16px;
+.card {
+  padding: 2em;
+}
 
-  /* Border radiuses */
-  --br-5xl: 24px;
-  --br-sm-5: 13.5px;
+.read-the-docs {
+  color: #888;
 }
