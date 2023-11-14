@@ -1,371 +1,81 @@
-.frame-child {
-    flex: 1;
-    border-radius: var(--br-5xl);
-    background-color: var(--color-gray);
-    backdrop-filter: blur(15px);
-    border-style: solid;
-    border-color: rgba(255, 255, 255, 0.4);
-    height: 250px;
-  }
+import "./PluginFileCover1.css";
 
-  .frame-parent {
-    position: absolute;
-    top: 792px;
-    left: 220px;
-    width: 350px;
-    height: 190px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 21px;
-  }
-  .nono{
-    position: relative;
-    background-color: #d8d8d8;
-    border: solid;
-    border-color: rgba(240, 248, 255, 0.684);
-    padding: 20px;
-    text-align: center;
-    font-size: 16px;
-    border-radius: 50%;
-    cursor: pointer;
-    top:-120px;
-    left: -55px;
-    display: inline-block; 
-  }
+const PluginFileCover1 = () => {
+  return (
+    <div className="plugin-file-cover-1">
+      <div className="frame-parent">
+        <div className="frame-child" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+      </div>
+      <div className="aboutUs">About Us</div>
+      <div className="plugin-file-cover-1-item" />
+      <div className="plugin-file-cover-1-inner"> 
+        <button className="clicksee">click here to see 3D model result</button>
+      </div>
+      <div className="rectangle-group">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <button className="group-child1" ></button>
+        <button className="group-child2" ><i class="fa fa-camera fa-2x" aria-hidden="true"></i></button>
+        <button className="group-child3" ></button>
+        <button className="group-child4" ></button>
+      </div>
+      <div className="plugin-file-cover-1-child1" >
+        <div className="identifyTo">Screw Identifier</div>
+        <div className="convertingTo">Converting 2D to 3D</div>
+      </div>
+      <div className="dimension">
+        <div className= "nom"></div>
+        <div className = "h"></div>
+        <div className = "k"></div>
+        <div className = "l"></div>
+        <div className = "tl"></div>
+        <div className = "sl"></div>
+      </div>
+      <div className="load">
+        <button className="exportingTo">Export to 3D model</button>
+      </div>
+      <div className="loadTol">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+        <b className="clickto">click below to download</b>
+        <a className="Download" href="https://www.w3schools.com" target="_blank"><i class="fa fa-download"></i> Download</a>
+      </div>
+      
+      <div className="custom-select-frame">
+        <div className="head-select" style = {{width: "100px"}}>
+                <select>
+                    <option value="0">Select head:</option>
+                    <option value="1">HEX</option>
+                    <option value="2">CAP</option>
+                    <option value="3">DOME</option>
+                    <option value="4">PAN</option>
+                    <option value="3">COUNTER SINK</option>
+                </select>
+        </div>
+        <div className="bit-select" style = {{width: "100px"}}>
+            <select>
+                    <option value="0">Select bit type:</option>
+                    <option value="1">NONE</option>
+                    <option value="2">ALLEN</option>
+                    <option value="3">TORX</option>
+                    <option value="4">PHILLIPS</option>
+            </select>
+        </div>
+      </div> 
+      <div className="text-select-frame">
+        <div className ="HeadType">Head Type</div>
+        <div className ="BitType">Bit Type</div>
+      </div>
+      <div className="text-result-frame">
+        <div className ="size">Nominal Size</div>
+        <div className ="headDia">Head Diameter (H) </div>
+        <div className ="headHeight">Height of Head (K) </div>
+        <div className ="blen">Bolt Length</div>
+        <div className ="tlen">Thread Length</div>
+        <div className ="slen">Space Length</div>
+      </div>
+    </div>
+  );
+};
 
-  .plugin-file-cover-1-child,
-  .plugin-file-cover-1-inner,
-  .plugin-file-cover-1-item {
-    position: absolute;
-    top: 792px;
-    left: 530px;
-    border-radius: var(--br-5xl);
-    background-color: var(--color-gray);
-    backdrop-filter: blur(15px);
-    border-style: solid;
-    border-color: rgba(255, 255, 255, 0.4);
-    width: 215px;
-  }
-  .plugin-file-cover-1-inner,
-  .plugin-file-cover-1-item {
-    top: 221px;
-    left: 55px;
-    width: 711px;
-    height: 490px;
-  }
-  .clicksee{
-    position: absolute;
-    left: calc(50% - 90px) ;
-    top: 50% ;
-    border: none;
-    padding: 12px 30px;
-    cursor: pointer;
-    font-size: 15px;  
-  }
-  .clicksee:hover{
-    background-color: aliceblue;
-  }
+export default PluginFileCover1;
 
-  .plugin-file-cover-1-inner {
-    top: 1068px;
-    width: 1323px;
-    height: 637px;
-  }
-  .group-child1,
-  .group-child2,
-  .group-child3,
-  .group-child4 {
-    position: absolute;
-    top: -80px;
-    left: 0px;
-    border-radius: 13.52px;
-    width: 55.98px;
-    height: 56px;
-    object-fit: cover;
-    background-color: rgb(237, 237, 237);
-    cursor: pointer;
-  }
-  .group-child1:hover,
-  .group-child2:hover,
-  .group-child3:hover,
-  .group-child4:hover {
-   background-color: rgba(195, 195, 195, 0.775);;
-  }
-  .group-child2,
-  .group-child3,
-  .group-child4 {
-    left: 65px;
-  }
-  .group-child3,
-  .group-child4 {
-    left: 131.68px;
-  }
-  .group-child4 {
-    left: 197.02px;
-  }
-  .group-child2{
-    color: white;
-    
-  }
-  .rectangle-group {
-    position: absolute;
-    top: 724px;
-    left: 271px;
-    width: 253px;
-    height: 56px;
-  }
-  .check-mark-1-icon {
-    position: absolute;
-    top: 731px;
-    left: 409px;
-    width: 45px;
-    height: 41px;
-    object-fit: cover;
-  }
-  .frame-div {
-    position: absolute;
-    top: 1781px;
-    left: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(236, 236, 236, 0.26),
-      rgba(43, 127, 255, 0.57)
-    );
-    width: 100%;
-    height: 601px;
-    overflow: hidden;
-  }
-  .aboutUs{
-    position: absolute;
-    top: 1900px;
-    left: 45%;
-    text-align: center;
-    font-family: var(--font-urbanist);
-    font-size: 50px;
-  }
-  .photo-camera-1 {
-    position: absolute;
-    top: 955px;
-    left: 315px;
-    width: 41px;
-    height: 41px;
-  }
-  .photo-camera-2-icon {
-    position: absolute;
-    top: 733px;
-    left: 346px;
-    width: 37px;
-    height: 37px;
-    object-fit: cover;
-  }
-  .on-off-button-1-icon,
-  .wrong-1-icon {
-    position: absolute;
-    top: 735px;
-    left: 483px;
-    width: 26px;
-    height: 34px;
-    object-fit: cover;
-  }
-  .on-off-button-1-icon {
-    top: 734px;
-    left: 281px;
-    width: 35px;
-    height: 35px;
-  }
-  .plugin-file-cover-1 {
-    position: relative;
-    background: linear-gradient(
-      180deg,
-      rgba(43, 127, 255, 0.94),
-      rgba(113, 170, 254, 0.94) 12.5%,
-      #ededed
-    );
-    width: 100%;
-    height: 2382px;
-    overflow: hidden;
-    text-align: center;
-    font-size: var(--font-size-5xl);
-    color: var(--color-white);
-    font-family: var(--font-timmana);
-  }
-  .plugin-file-cover-1-child1 {
-    position: absolute;
-    top: calc(50% - 970px);
-    left: calc(50% + 72px);
-    background-color: rgb(237, 237, 237);
-    width: 590px;
-    height: 787px;
-  }
-  .custom-select-frame{
-    position: absolute;
-    top: calc(50% - 880px);
-    left: calc(50% + 250px);
-    width: 100px;
-    height: 100px;
-    padding: 9px var(--padding-base) var(--padding-base);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-items: center;
-    box-sizing: border-box;
-    gap: 21px;
-  }
-  .head-select
-  .bit-select{
-    position: relative;
-    font-family: Arial;
- 
-  }
-  .select-selected {
-    background-color: blue;
-  }
-  .head-select{
-    left: 20px;
-  }
-  .convertingTo{
-    position: relative;
-    top: 500px;
-    color: rgb(0, 0, 0); 
-    text-align: center;
-    font-size: 40px;
-    font-weight:bold ;
-  }
-  .identifyTo{
-    position: relative;
-    top: 30px;
-    color: rgb(0, 0, 0); 
-    text-align: center;
-    font-size: 40px;
-    font-weight:bold ;
-  }
-
-  .Result{
-    position: relative;
-    top: 160px;
-    color: rgb(0, 0, 0); 
-    text-align: center;
-    font-size: 40px;
-    font-weight:bold ;
-  }
-  .result{
-    position: absolute;
-    width: 260px;
-    height: 56px;
-    top: calc(50% - 740px);
-    left: calc(50% + 330px);
-  }
-  .done{
-    position : absolute;
-    left: -20px;
-    width: 130px;
-    cursor: pointer;
-
-  }
-  .text-select-frame {
-    position: absolute;
-    top: calc(50% - 869px);
-    left: calc(50% + 120px);
-    width: 100px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-items: center;
-    box-sizing: border-box;
-    gap: 21px;
-    color: black;
-    font-size: 24px;
-  }
-  .load{
-    position: absolute;
-    width: 260px;
-    height: 56px;
-    top: calc(50% - 340px);
-    left: calc(50% + 240px);
-    align-items: center;
-  }
-  .exportingTo {
-    cursor: pointer;
-  }
-  .loadTol{
-    position: absolute;
-    width: 260px;
-    height: 56px;
-    top: calc(50% - 310px);
-    left: calc(50% + 240px);
-    align-items: center;
-    gap:20px;
-  }
-  .clickto{
-    position: relative;
-    color: black;
-    font-family: Arial;
-    font-size: 15px;
-    top: 5px;
-  }
-  .Download{
-    background-color: DodgerBlue;
-    border: none;
-    color: white;
-    padding: 14px 25px;
-    cursor: pointer;
-    font-size: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-family: 'Arial';
-  }
-  .Download:hover {
-    background-color: RoyalBlue;
-  }
-  .text-result-frame{
-    position: absolute;
-    top: calc(50% - 620px);
-    left: calc(50% + 120px);
-    width: 300px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-items: center;
-    box-sizing: border-box;
-    gap: 11px;
-    color: black;
-    font-size: 24px;
-  }
-  .dimension{
-    position: absolute;
-    top: calc(50% - 620px);
-    left: calc(50% + 320px);
-    width: 300px;
-    height: 200px;
-  }
-  .nom,.h,.k,.l {
-    position: absolute;
-    width: 300px;
-    height: 30px;
-    background-color: white;
-    object-fit: cover;
-    border: solid;
-    border-color: rgb(168, 168, 168) ;
-    border-radius: 5px;
-  }
-  .h{
-    top: 50px;
-  }
-  .k{
-    top:100px;
-  }
-  .l{
-    top:150px;
-  }
-
-
-  @media screen and (max-width: 1200px) {
-    .plugin-file-cover-1 {
-      width: 1200px;
-    }
-  }
