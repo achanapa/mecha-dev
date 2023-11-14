@@ -10,7 +10,7 @@ const PluginFileCover1 = () => {
       <div className="aboutUs">About Us</div>
       <div className="plugin-file-cover-1-item" />
       <div className="plugin-file-cover-1-inner"> 
-        <button className="clicksee">click here to see the result</button>
+        <button className="clicksee">click here to see 3D model result</button>
       </div>
       <div className="rectangle-group">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -22,16 +22,14 @@ const PluginFileCover1 = () => {
       <div className="plugin-file-cover-1-child1" >
         <div className="identifyTo">Screw Identifier</div>
         <div className="convertingTo">Converting 2D to 3D</div>
-        <div className="Result">Result</div>
-      </div>
-      <div className="result">
-        <button className="done">Done</button>
       </div>
       <div className="dimension">
         <div className= "nom"></div>
         <div className = "h"></div>
         <div className = "k"></div>
         <div className = "l"></div>
+        <div className = "tl"></div>
+        <div className = "sl"></div>
       </div>
       <div className="load">
         <button className="exportingTo">Export to 3D model</button>
@@ -71,10 +69,13 @@ const PluginFileCover1 = () => {
         <div className ="size">Nominal Size</div>
         <div className ="headDia">Head Diameter (H) </div>
         <div className ="headHeight">Height of Head (K) </div>
-        <div className ="len">Length</div>
+        <div className ="blen">Bolt Length</div>
+        <div className ="tlen">Thread Length</div>
+        <div className ="slen">Space Length</div>
       </div>
     </div>
   );
 };
 
 export default PluginFileCover1;
+

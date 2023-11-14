@@ -201,7 +201,7 @@
   }
   .custom-select-frame{
     position: absolute;
-    top: calc(50% - 880px);
+    top: calc(50% - 480px);
     left: calc(50% + 250px);
     width: 100px;
     height: 100px;
@@ -227,7 +227,7 @@
   }
   .convertingTo{
     position: relative;
-    top: 500px;
+    top: 360px;
     color: rgb(0, 0, 0); 
     text-align: center;
     font-size: 40px;
@@ -266,7 +266,7 @@
   }
   .text-select-frame {
     position: absolute;
-    top: calc(50% - 869px);
+    top: calc(50% - 470px);
     left: calc(50% + 120px);
     width: 100px;
     height: 100px;
@@ -283,7 +283,7 @@
     position: absolute;
     width: 260px;
     height: 56px;
-    top: calc(50% - 340px);
+    top: calc(50% - 350px);
     left: calc(50% + 240px);
     align-items: center;
   }
@@ -323,7 +323,7 @@
   }
   .text-result-frame{
     position: absolute;
-    top: calc(50% - 620px);
+    top: calc(50% - 860px);
     left: calc(50% + 120px);
     width: 300px;
     height: 100px;
@@ -338,12 +338,12 @@
   }
   .dimension{
     position: absolute;
-    top: calc(50% - 620px);
+    top: calc(50% - 860px);
     left: calc(50% + 320px);
     width: 300px;
     height: 200px;
   }
-  .nom,.h,.k,.l {
+  .nom,.h,.k,.l,.sl,.tl {
     position: absolute;
     width: 300px;
     height: 30px;
@@ -361,6 +361,12 @@
   }
   .l{
     top:150px;
+  }
+  .tl{
+    top:200px
+  }
+  .sl{
+    top:250px;
   }
 
 
