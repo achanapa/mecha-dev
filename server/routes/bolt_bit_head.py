@@ -1,5 +1,7 @@
+import sys
 from flask import Blueprint, request, jsonify
-from server.models.bolt_bit_head import BoltBitHead
+sys.path.append('../')
+from models.bolt_bit_head import BoltBitHead
 
 bolt_bit_head_bp = Blueprint('bolt_bit_head', __name__)
 

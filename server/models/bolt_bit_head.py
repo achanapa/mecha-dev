@@ -1,20 +1,13 @@
-from server.database import db
+from pymongo import MongoClient
 
-class BoltBitHead(db.Document):
-    # Define your BoltBitHead data model here
-    bolt_id = db.IntField(required=True)
-    M_Size = db.IntField()
-    Head_Length = db.IntField()
-    Thread_Length = db.IntField()
-    Head_Diameter = db.IntField()
-    Thread_Diameter = db.IntField()
-    Space_Length = db.IntField()
-    type_head = db.StringField(required=True)
-    type_bit = db.StringField(required=True)
+client = MongoClient('mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/')
+db = client['Dimension']
+
+class BoltBitHead:
+    collection = db['bolt_bit_head']
 
     @staticmethod
     def save_bolt_bit_head(data):
         # Implement logic to save BoltBitHead data
-        # For example, you can create a new BoltBitHead document with the provided data
-        bolt_bit_head = BoltBitHead(**data)
-        bolt_bit_head.save()
+        # For example, you can insert a new document into the collection
+        BoltBitHead.collection.insert_one(data)

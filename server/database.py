@@ -1,11 +1,16 @@
-from flask_mongoengine import MongoEngine
-
-db = MongoEngine()
+from flask_pymongo import PyMongo
 
 def initialize_db(app):
-    db.init_app(app)
-    # Connect to the MongoDB database
-    app.config['MONGODB_SETTINGS'] = {
-        'db': 'Dimension',
-        'host': 'mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/',
-    }
+    app.config['MONGO_URI'] = 'mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/Dimension'
+    app.config['MONGO_DBNAME'] = 'Dimension'
+    PyMongo.init_app(app)
+
+
+# from flask_pymongo import PyMongo
+
+# mongo = PyMongo()
+
+# def initialize_db(app):
+#     app.config['MONGO_URI'] = 'mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/Dimension'
+#     app.config['MONGO_DBNAME'] = 'Dimension'
+#     mongo.init_app(app)
