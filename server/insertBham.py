@@ -3,18 +3,30 @@ from pymongo import MongoClient
 CONNECTION_STRING = 'mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/'
 client = MongoClient(CONNECTION_STRING)
 Database = client['Dimension']
-Collection = Database['BoltBitHead']
+# Collection = Database['BoltBitHead']
+
+# data = {
+#     '_id': 2,
+#     'M_Size': 4,
+#     'Head_Length' : 4, 
+#     'Thread_Length' : 12.2, 
+#     'Head_Diameter' : 4, 
+#     'Thread_Diameter' : 3.89, 
+#     'Space_Length' : 0,
+#     'type_head': 'HEX',
+#     'type_bit': 'ALLEN'
+# }
+
+Collection = Database['Bolt_Dimension']
 
 data = {
-    '_id': 2,
+    '_id': 5,
     'M_Size': 4,
     'Head_Length' : 4, 
     'Thread_Length' : 12.2, 
     'Head_Diameter' : 4, 
     'Thread_Diameter' : 3.89, 
     'Space_Length' : 0,
-    'type_head': 'HEX',
-    'type_bit': 'ALLEN'
 }
 
 Collection.insert_one(data)
