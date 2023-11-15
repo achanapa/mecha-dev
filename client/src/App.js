@@ -2,7 +2,7 @@ import React,{useRef, useEffect, useState} from 'react';
 import './App.css';
 
 import Navbar from './Navbar';
-import PluginFileCover1 from './plugin';
+import PluginFileCover2 from './plugin';
 
 function App() {
  
@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
      <Navbar/>
-     <PluginFileCover1/>
+     <PluginFileCover2/>
 
     </div>
   );
