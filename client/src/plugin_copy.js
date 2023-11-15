@@ -3,7 +3,7 @@ import "./PluginFileCover1.css";
 // Import Axios and other necessary dependencies if not already done
 import axios from "axios";
 
-const PluginFileCover1 = () => {
+const PluginFileCover2 = () => {
   return (
     <div className="plugin-file-cover-1">
       <div className="frame-parent">
@@ -81,8 +81,6 @@ const PluginFileCover1 = () => {
 };
 
 
-// ... (your existing code)
-
 // Add a function to send the POST request
 const sendSelectionToBackend = () => {
   // Get the user selections from the dropdowns
@@ -98,7 +96,7 @@ const sendSelectionToBackend = () => {
 
   // Send a POST request to the backend
   axios
-    .post("/combine_and_store_data", requestData)
+    .post("http://127.0.0.1:5000/combine_and_store_data", requestData)
     .then((response) => {
       // Handle the response from the server
       console.log("Response from server:", response.data);
@@ -114,4 +112,4 @@ const exportButton = document.querySelector(".exportingTo");
 exportButton.addEventListener("click", sendSelectionToBackend);
 
 
-export default PluginFileCover1;
+export default PluginFileCover2;

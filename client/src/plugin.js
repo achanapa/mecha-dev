@@ -1,6 +1,6 @@
 import "./PluginFileCover1.css";
 
-const PluginFileCover2 = () => {
+const PluginFileCover1 = () => {
   return (
     <div className="plugin-file-cover-1">
       <div className="frame-parent">
@@ -77,4 +77,4 @@ const PluginFileCover2 = () => {
   );
 };
 
-export default PluginFileCover2;
+export default PluginFileCover1;
