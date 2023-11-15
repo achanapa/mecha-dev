@@ -13,7 +13,7 @@ BoltBitHead = db["BoltBitHead"]
 @app.route("/get_recent_bolt_data", methods=["GET"])
 def get_recent_bolt_data():
     try:
-        recent_bolt_data = Bolt_Dimension.find_one(sort=[("_id", -1)])
+        recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
         return jsonify(recent_bolt_data)
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -23,10 +23,11 @@ def combine_and_store_data():
     try:
         # user_selections = request.json
 
-        recent_bolt_data = Bolt_Dimension.find_one(sort=[("_id", -1)])
+        recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
         # combined_data = {
         #     "_id": recent_bolt_data["_id"],
+        #     "Timestamp": recent_bolt_data["Timestamp"],
         #     "M_Size": recent_bolt_data["M_Size"],
         #     "Head_Length": recent_bolt_data["Head_Length"],
         #     "Thread_Length": recent_bolt_data["Thread_Length"],
@@ -38,6 +39,7 @@ def combine_and_store_data():
         # }
         combined_data = {
             "_id": recent_bolt_data["_id"],
+            "Timestamp": recent_bolt_data["Timestamp"],
             "M_Size": recent_bolt_data["M_Size"],
             "Head_Length": recent_bolt_data["Head_Length"],
             "Thread_Length": recent_bolt_data["Thread_Length"],
