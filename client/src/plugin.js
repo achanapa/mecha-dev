@@ -78,3 +78,4 @@ const PluginFileCover1 = () => {
 };
 
 export default PluginFileCover1;
+

@@ -1,17 +1,16 @@
 import React,{useRef, useEffect, useState} from 'react';
 import './App.css';
 
+
 import Navbar from './Navbar';
-import PluginFileCover1 from './plugin';
+import ScrewyDisplay from './ScrewyDisplay';
 
 function App() {
- 
-
+  
   return (
     <div className="App">
      <Navbar/>
-     <PluginFileCover1/>
-
+     <ScrewyDisplay/>
     </div>
   );
 }
