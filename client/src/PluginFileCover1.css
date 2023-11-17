@@ -5,21 +5,36 @@
     backdrop-filter: blur(15px);
     border-style: solid;
     border-color: rgba(255, 255, 255, 0.4);
-    height: 206px;
+    height: 250px;
   }
+
   .frame-parent {
     position: absolute;
     top: 792px;
-    left: 53px;
-    width: 700px;
+    left: 220px;
+    width: 350px;
     height: 190px;
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 21px;
-
   }
+  .nono{
+    position: relative;
+    background-color: #d8d8d8;
+    border: solid;
+    border-color: rgba(240, 248, 255, 0.684);
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    top:-120px;
+    left: -55px;
+    display: inline-block; 
+  }
+
   .plugin-file-cover-1-child,
   .plugin-file-cover-1-inner,
   .plugin-file-cover-1-item {
@@ -40,6 +55,19 @@
     width: 711px;
     height: 490px;
   }
+  .clicksee{
+    position: absolute;
+    left: calc(50% - 90px) ;
+    top: 50% ;
+    border: none;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 15px;  
+  }
+  .clicksee:hover{
+    background-color: aliceblue;
+  }
+
   .plugin-file-cover-1-inner {
     top: 1068px;
     width: 1323px;
@@ -50,16 +78,20 @@
   .group-child3,
   .group-child4 {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -80px;
+    left: 0px;
     border-radius: 13.52px;
     width: 55.98px;
     height: 56px;
     object-fit: cover;
     background-color: rgb(237, 237, 237);
-    border-style: solid;
-    border-color: rgba(128, 128, 128, 0.775);
     cursor: pointer;
+  }
+  .group-child1:hover,
+  .group-child2:hover,
+  .group-child3:hover,
+  .group-child4:hover {
+   background-color: rgba(195, 195, 195, 0.775);;
   }
   .group-child2,
   .group-child3,
@@ -72,6 +104,10 @@
   }
   .group-child4 {
     left: 197.02px;
+  }
+  .group-child2{
+    color: white;
+    
   }
   .rectangle-group {
     position: absolute;
@@ -100,6 +136,14 @@
     width: 100%;
     height: 601px;
     overflow: hidden;
+  }
+  .aboutUs{
+    position: absolute;
+    top: 1900px;
+    left: 45%;
+    text-align: center;
+    font-family: var(--font-urbanist);
+    font-size: 50px;
   }
   .photo-camera-1 {
     position: absolute;
@@ -157,10 +201,10 @@
   }
   .custom-select-frame{
     position: absolute;
-    top: calc(50% - 880px);
-    left: calc(50% + 90px);
-    width: 400px;
-    height: 400px;
+    top: calc(50% - 480px);
+    left: calc(50% + 250px);
+    width: 100px;
+    height: 100px;
     padding: 9px var(--padding-base) var(--padding-base);
     display: flex;
     flex-direction: column;
@@ -183,17 +227,149 @@
   }
   .convertingTo{
     position: relative;
-    top: 20px;
-    font-family: var(--font-urbanist);
-    color: black; 
+    top: 360px;
+    color: rgb(0, 0, 0); 
     text-align: center;
+    font-size: 40px;
+    font-weight:bold ;
   }
-  .exportingTo{
+  .identifyTo{
     position: relative;
-    top: 40%;
-    cursor: pointer;
-    size: 100%;
+    top: 30px;
+    color: rgb(0, 0, 0); 
+    text-align: center;
+    font-size: 40px;
+    font-weight:bold ;
   }
+
+  .Result{
+    position: relative;
+    top: 160px;
+    color: rgb(0, 0, 0); 
+    text-align: center;
+    font-size: 40px;
+    font-weight:bold ;
+  }
+  .result{
+    position: absolute;
+    width: 260px;
+    height: 56px;
+    top: calc(50% - 740px);
+    left: calc(50% + 330px);
+  }
+  .done{
+    position : absolute;
+    left: -20px;
+    width: 130px;
+    cursor: pointer;
+
+  }
+  .text-select-frame {
+    position: absolute;
+    top: calc(50% - 470px);
+    left: calc(50% + 120px);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-items: center;
+    box-sizing: border-box;
+    gap: 21px;
+    color: black;
+    font-size: 24px;
+  }
+  .load{
+    position: absolute;
+    width: 260px;
+    height: 56px;
+    top: calc(50% - 350px);
+    left: calc(50% + 240px);
+    align-items: center;
+  }
+  .exportingTo {
+    cursor: pointer;
+  }
+  .loadTol{
+    position: absolute;
+    width: 260px;
+    height: 56px;
+    top: calc(50% - 310px);
+    left: calc(50% + 240px);
+    align-items: center;
+    gap:20px;
+  }
+  .clickto{
+    position: relative;
+    color: black;
+    font-family: Arial;
+    font-size: 15px;
+    top: 5px;
+  }
+  .Download{
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    padding: 14px 25px;
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Arial';
+  }
+  .Download:hover {
+    background-color: RoyalBlue;
+  }
+  .text-result-frame{
+    position: absolute;
+    top: calc(50% - 860px);
+    left: calc(50% + 120px);
+    width: 300px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-items: center;
+    box-sizing: border-box;
+    gap: 11px;
+    color: black;
+    font-size: 24px;
+  }
+  .dimension{
+    position: absolute;
+    top: calc(50% - 860px);
+    left: calc(50% + 320px);
+    width: 300px;
+    height: 200px;
+  }
+  .nom,.h,.k,.l,.sl,.tl {
+    position: absolute;
+    width: 300px;
+    height: 30px;
+    background-color: white;
+    object-fit: cover;
+    border: solid;
+    border-color: rgb(168, 168, 168) ;
+    border-radius: 5px;
+  }
+  .h{
+    top: 50px;
+  }
+  .k{
+    top:100px;
+  }
+  .l{
+    top:150px;
+  }
+  .tl{
+    top:200px
+  }
+  .sl{
+    top:250px;
+  }
+
+
   @media screen and (max-width: 1200px) {
     .plugin-file-cover-1 {
       width: 1200px;
