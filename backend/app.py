@@ -12,6 +12,8 @@ CORS(app)
 db = client['Dimension']
 Bolt_Dimension = db["Bolt_Dimension"]
 BoltBitHead = db["BoltBitHead"]
+GoogleLink = db["GoogleLink"]
+Captured = db["Captured"]
 
 #mqtt
 app.config['MQTT_BROKER_URL'] = '161.200.84.240'  # broker 
@@ -40,6 +42,47 @@ def test():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+# example mqtt subscribe in general
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+   if rc == 0:
+       print('Connected successfully')
+       mqtt.subscribe(topic_sub) # subscribe topic
+   else:
+       print('Bad connection. Code:', rc)
+    
+@mqtt.on_message()
+def sub_status(client, userdata, message):
+    data = dict(
+       topic_sub=topic_sub,
+       payload=message.payload.decode()
+  )
+    print('Received message on topic: {topic_sub} with payload: {payload}'.format(**data))
+
+
+@app.route("/get_recent_captured_photo", methods=["GET"])
+def get_recent_captured_photo():
+    try:
+        recent_captured_photo = Captured.find_one(sort=[("Timestamp", -1)])
+        return jsonify(recent_captured_photo)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+# mqtt publish (recieve button command from front-end then pub)
+@app.route('/publish', methods=['GET','POST'])
+def mqtt_publish_bham():
+    if request.method == 'GET':
+        message = 'isProcessed'
+        mqtt.publish(topic_pub,message )
+        # message = request.get_json()
+        # mqtt.publish(topic_pub, message['msg'])
+    return 'Message published'
+
+
+
+
+
 
 @app.route("/get_recent_bolt_data", methods=["GET"])
 def get_recent_bolt_data():
@@ -50,20 +93,18 @@ def get_recent_bolt_data():
         return jsonify({"error": str(e)})
     
 
-@app.route("/combine_and_store_data",methods=["GET", "POST"])
+from flask import request, jsonify
+
+@app.route("/combine_and_store_data", methods=["POST"])
 def combine_and_store_data():
     try:
-        # user_selections = request.json
-
-        recieve_data = None
-
-        if request.method == 'POST':
-            user_selections = request.json
-            print("Received data:", user_selections)
+        # Parse the JSON data sent in the POST request
+        user_selections = request.json
         
-
+        # Fetch the most recent bolt data from Bolt_Dimension
         recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
+        # Combine the data from the latest bolt entry with user selections
         combined_data = {
             "_id": recent_bolt_data["_id"],
             "Timestamp": recent_bolt_data["Timestamp"],
@@ -76,24 +117,22 @@ def combine_and_store_data():
             "type_head": user_selections["type_head"],
             "type_bit": user_selections["type_bit"]
         }
-        # combined_data = {
-        #     "_id": recent_bolt_data["_id"],
-        #     "Timestamp": recent_bolt_data["Timestamp"],
-        #     "M_Size": recent_bolt_data["M_Size"],
-        #     "Head_Length": recent_bolt_data["Head_Length"],
-        #     "Thread_Length": recent_bolt_data["Thread_Length"],
-        #     "Head_Diameter": recent_bolt_data["Head_Diameter"],
-        #     "Thread_Diameter": recent_bolt_data["Thread_Diameter"],
-        #     "Space_Length": recent_bolt_data["Space_Length"],
-        #     "type_head": "CAP",
-        #     "type_bit": "TORX"
-        # }  
- #       BoltBitHead.insert_one(combined_data)
-   #     return jsonify({"message": "Data combined and stored successfully"})
-        return jsonify(combined_data)
+
+        # Insert the combined data into the BoltBitHead collection
+        BoltBitHead.insert_one(combined_data)
+        
+        return jsonify({"message": "Data combined and stored successfully"})
     except Exception as e:
         return jsonify({"error": str(e)})
+    
 
+@app.route("/get_GoogleLink", methods=["GET"])
+def get_GoogleLink():
+    try:
+        recent_link = GoogleLink.find_one(sort=[("Timestamp", -1)])
+        return jsonify(recent_link)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
  # send 3d link ยังไม่เสด  
 @app.route("/send_3d_back", methods=["GET", "POST"])
@@ -110,32 +149,7 @@ def send_3d_back():
         return jsonify({"error": str(e)})
 
 
-# mqtt publish (recieve button command from front-end then pub)
-@app.route('/publish', methods=['GET','POST'])
-def mqtt_publish_bham():
-    if request.method == 'GET':
-        message = 'isProcessed'
-        mqtt.publish(topic_pub,message )
-        # message = request.get_json()
-        # mqtt.publish(topic_pub, message['msg'])
-    return 'Message published'
 
-# example mqtt subscribe in general
-@mqtt.on_connect()
-def handle_connect(client, userdata, flags, rc):
-   if rc == 0:
-       print('Connected successfully')
-       mqtt.subscribe(topic_sub) # subscribe topic
-   else:
-       print('Bad connection. Code:', rc)
-
-@mqtt.on_message()
-def sub_status(client, userdata, message):
-    data = dict(
-       topic_sub=topic_sub,
-       payload=message.payload.decode()
-  )
-    print('Received message on topic: {topic_sub} with payload: {payload}'.format(**data))
     
 
 
