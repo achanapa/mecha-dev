@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
 from flask_mqtt import Mqtt 
+import base64
 
      
 app = Flask(__name__)
@@ -60,13 +61,37 @@ def sub_status(client, userdata, message):
     print('Received message on topic: {topic_sub} with payload: {payload}'.format(**data))
 
 
+# @app.route("/get_recent_captured_photo", methods=["GET"])
+# def get_recent_captured_photo():
+#     try:
+#         recent_captured_photo = Captured.find_one(sort=[("Timestamp", -1)])
+#         return jsonify(recent_captured_photo)
+#     except Exception as e:
+#         return jsonify({"error": str(e)})
+
 @app.route("/get_recent_captured_photo", methods=["GET"])
 def get_recent_captured_photo():
     try:
-        recent_captured_photo = Captured.find_one(sort=[("Timestamp", -1)])
-        return jsonify(recent_captured_photo)
+        # Assuming you're using PyMongo to interact with MongoDB
+        recent_captured_photo = db.Captured.find_one(sort=[("Timestamp", -1)])
+
+        if recent_captured_photo:
+            # Remove the MongoDB _id field, if needed
+            recent_captured_photo.pop("_id", None)
+
+            # Encode the binary image data as a base64-encoded string
+            img_binary = recent_captured_photo.get("img_binary")
+            if img_binary:
+                encoded_image = base64.b64encode(img_binary).decode("utf-8")
+                recent_captured_photo["img_binary"] = encoded_image
+
+            return jsonify(recent_captured_photo)
+        else:
+            return jsonify({"message": "No recent captured photo found"})
+
     except Exception as e:
         return jsonify({"error": str(e)})
+
 
 
 # mqtt publish (recieve button command from front-end then pub)
@@ -78,9 +103,6 @@ def mqtt_publish_bham():
         # message = request.get_json()
         # mqtt.publish(topic_pub, message['msg'])
     return 'Message published'
-
-
-
 
 
 
@@ -129,27 +151,10 @@ def combine_and_store_data():
 @app.route("/get_GoogleLink", methods=["GET"])
 def get_GoogleLink():
     try:
-        recent_link = GoogleLink.find_one(sort=[("Timestamp", -1)])
+        recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
         return jsonify(recent_link)
     except Exception as e:
         return jsonify({"error": str(e)})
-
- # send 3d link ยังไม่เสด  
-@app.route("/send_3d_back", methods=["GET", "POST"])
-def send_3d_back():
-    try:
-        googlelink = "https://www.google.co.th/?hl=th"
-        link_3d = {'link': googlelink}
-        if request.method == 'GET':   
-            print("Sending data:", link_3d )
-
-        return jsonify(link_3d)
-
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
-
-
     
 
 
