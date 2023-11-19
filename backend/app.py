@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
+from backend.googoo import download_file_from_google_drive, extract_file_id_from_google_drive_url
 from flask_mqtt import Mqtt 
 import base64
+import os
+import re
+import requests
+from flask import Flask, jsonify, send_from_directory
+from pymongo import MongoClient
 
      
 app = Flask(__name__)
@@ -148,14 +154,36 @@ def combine_and_store_data():
         return jsonify({"error": str(e)})
     
 
+# @app.route("/get_GoogleLink", methods=["GET"])
+# def get_GoogleLink():
+#     try:
+#         recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
+#         return jsonify(recent_link)
+#     except Exception as e:
+#         return jsonify({"error": str(e)})
+
 @app.route("/get_GoogleLink", methods=["GET"])
 def get_GoogleLink():
     try:
         recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
-        return jsonify(recent_link)
+
+        if recent_link:
+            file_id = extract_file_id_from_google_drive_url(recent_link["link"])
+            if file_id:
+                folder_path = r"./client/public/temp"
+                destination = os.path.join(folder_path, "downloaded.glb")
+
+                file_url = f"https://drive.google.com/uc?id={file_id}&export=download"
+
+                download_file_from_google_drive(file_url, destination)
+
+                return send_from_directory(folder_path, "downloaded.glb", as_attachment=True)
+
+        return jsonify({"message": "No Google Drive link found."})
+
     except Exception as e:
         return jsonify({"error": str(e)})
-    
+
 
 
 if __name__ == "__main__":

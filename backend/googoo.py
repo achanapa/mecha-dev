@@ -50,17 +50,14 @@ def save_response_content(response, destination):
             if chunk: # filter out keep-alive new chunks
                 f.write(chunk)
 
-# Create a folder named "photo" if it doesn't exist
-folder_path = r'./temp'  # Use a raw string
-if not os.path.exists(folder_path):
-    os.makedirs(folder_path)
+# folder_path = r'./temp'
+# if not os.path.exists(folder_path):
+#     os.makedirs(folder_path)
 
-# Extracting file ID from the Google Drive URL
-file_id = extract_file_id_from_google_drive_url(url)
-# Creating a direct download URL for the Google Drive file
-file_url = f'https://drive.google.com/uc?id={file_id}&export=download'
+# file_id = extract_file_id_from_google_drive_url(url)
 
-# The path where you want to save the downloaded file, inside the "photo" folder
-destination = os.path.join(folder_path, 'downloaded.glb')
+# file_url = f'https://drive.google.com/uc?id={file_id}&export=download'
 
-download_file_from_google_drive(file_url, destination)
+# destination = os.path.join(folder_path, 'downloaded.glb')
+
+# download_file_from_google_drive(file_url, destination)
