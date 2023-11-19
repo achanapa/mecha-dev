@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
 from flask_mqtt import Mqtt 
+import base64
 
      
 app = Flask(__name__)
@@ -12,6 +13,9 @@ CORS(app)
 db = client['Dimension']
 Bolt_Dimension = db["Bolt_Dimension"]
 BoltBitHead = db["BoltBitHead"]
+GoogleLink = db["GoogleLink"]
+Captured = db["Captured"]
+
 
 #mqtt
 app.config['MQTT_BROKER_URL'] = '161.200.84.240'  # broker 
@@ -25,21 +29,41 @@ mqtt = Mqtt(app)
 topic_pub = '/mqtt/toPi1'
 topic_sub = '/mqtt/fromPi1'
 
-# test จ้า ไม่เกี่ยว
-@app.route("/testbutton", methods=["GET", "POST"])
-def test():
+mssg = [] 
+
+#get status
+@app.route("/get_status", methods=["GET"])
+def get_status():
     try:
-        recieve_data = None
-
-        if request.method == 'POST':
-            recieve_data = request.json
-            print("Received data:", recieve_data)
-
+        recieve_data = {'msg': mssg[0]}
         return jsonify(recieve_data)
 
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route("/get_recent_captured_photo", methods=["GET"])
+def get_recent_captured_photo():
+    try:
+        # Assuming you're using PyMongo to interact with MongoDB
+        recent_captured_photo = db.Captured.find_one(sort=[("Timestamp", -1)])
+
+        if recent_captured_photo:
+            # Remove the MongoDB _id field, if needed
+            recent_captured_photo.pop("_id", None)
+
+            # Encode the binary image data as a base64-encoded string
+            img_binary = recent_captured_photo.get("img_binary")
+            if img_binary:
+                encoded_image = base64.b64encode(img_binary).decode("utf-8")
+                recent_captured_photo["img_binary"] = encoded_image
+
+            return jsonify(recent_captured_photo)
+        else:
+            return jsonify({"message": "No recent captured photo found"})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+    
 
 @app.route("/get_recent_bolt_data", methods=["GET"])
 def get_recent_bolt_data():
@@ -54,13 +78,11 @@ def get_recent_bolt_data():
 def combine_and_store_data():
     try:
         # user_selections = request.json
-
         recieve_data = None
 
         if request.method == 'POST':
             user_selections = request.json
-            print("Received data:", user_selections)
-        
+            print("Received data:", user_selections)       
 
         recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
@@ -76,49 +98,60 @@ def combine_and_store_data():
             "type_head": user_selections["type_head"],
             "type_bit": user_selections["type_bit"]
         }
-        # combined_data = {
-        #     "_id": recent_bolt_data["_id"],
-        #     "Timestamp": recent_bolt_data["Timestamp"],
-        #     "M_Size": recent_bolt_data["M_Size"],
-        #     "Head_Length": recent_bolt_data["Head_Length"],
-        #     "Thread_Length": recent_bolt_data["Thread_Length"],
-        #     "Head_Diameter": recent_bolt_data["Head_Diameter"],
-        #     "Thread_Diameter": recent_bolt_data["Thread_Diameter"],
-        #     "Space_Length": recent_bolt_data["Space_Length"],
-        #     "type_head": "CAP",
-        #     "type_bit": "TORX"
-        # }  
- #       BoltBitHead.insert_one(combined_data)
-   #     return jsonify({"message": "Data combined and stored successfully"})
+
+        BoltBitHead.insert_one(combined_data)
+
         return jsonify(combined_data)
+    
     except Exception as e:
         return jsonify({"error": str(e)})
+    
 
 
- # send 3d link ยังไม่เสด  
-@app.route("/send_3d_back", methods=["GET", "POST"])
-def send_3d_back():
+@app.route("/get_processing",methods=["GET", "POST"])
+def result_processed_data():
     try:
-        googlelink = "https://www.google.co.th/?hl=th"
-        link_3d = {'link': googlelink}
-        if request.method == 'GET':   
-            print("Sending data:", link_3d )
+        if request.method == 'POST':
+            user_selections = request.json
+            print("Received data:", user_selections)       
 
-        return jsonify(link_3d)
+        recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
+        result_data = {
+            "M_Size": recent_bolt_data["M_Size"],
+            "Head_Length": recent_bolt_data["Head_Length"],
+            "Thread_Length": recent_bolt_data["Thread_Length"],
+            "Head_Diameter": recent_bolt_data["Head_Diameter"],
+            "Thread_Diameter": recent_bolt_data["Thread_Diameter"],
+            "Space_Length": recent_bolt_data["Space_Length"],
+        }
+        
+        return jsonify(result_data)
+    
     except Exception as e:
         return jsonify({"error": str(e)})
+
+@app.route("/get_GoogleLink", methods=["GET"])
+def get_GoogleLink():
+    try:
+        recent_link = GoogleLink.find_one(sort=[("Timestamp", -1)])
+        print('recieve link',recent_link)
+        return jsonify(recent_link)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 
 # mqtt publish (recieve button command from front-end then pub)
 @app.route('/publish', methods=['GET','POST'])
 def mqtt_publish_bham():
-    if request.method == 'GET':
-        message = 'isProcessed'
-        mqtt.publish(topic_pub,message )
-        # message = request.get_json()
-        # mqtt.publish(topic_pub, message['msg'])
-    return 'Message published'
+    if request.method == 'POST':
+        message =  request.json['msg']
+        mqtt.publish(topic_pub, message)
+       # message = request.get_json()
+        #mqtt.publish(topic_pub, message['msg'])
+        print('pub'+message)
+    return jsonify({'msg':'Message Publish'}) 
 
 # example mqtt subscribe in general
 @mqtt.on_connect()
@@ -130,14 +163,15 @@ def handle_connect(client, userdata, flags, rc):
        print('Bad connection. Code:', rc)
 
 @mqtt.on_message()
-def sub_status(client, userdata, message):
+def sub_message(client, userdata, message):
     data = dict(
        topic_sub=topic_sub,
        payload=message.payload.decode()
   )
+    info=message.payload.decode()
+    mssg.append(info)
     print('Received message on topic: {topic_sub} with payload: {payload}'.format(**data))
+    print(mssg)
     
-
-
 if __name__ == "__main__":
     app.run(debug = True)
