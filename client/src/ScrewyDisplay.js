@@ -1,63 +1,134 @@
 import "./ScrewyDisplay.css";
 import axios from 'axios';
-import React,{useRef, useEffect, useState} from 'react';
-
+import React,{ useRef,useEffect, useState} from 'react';
+import ModelViewer from './ModelViewer';
 
 const ScrewyDisplay = () => {
 
-
   //usestate for camera status
   const [isCheckOn, setIsCheckOn] = useState('off');
-  
-  const statusData = {status : isCheckOn};
+  const previousCheckOn = useRef("");
+
+  useEffect(() => {
+    previousCheckOn.current = isCheckOn;
+  }, [isCheckOn]);
+
 
   const isPylonOn = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:5000/publish');
-      console.log( response.data)
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-/*
+   
+    axios
+      .post("http://127.0.0.1:5000/publish", {msg:'isOn'})
+      .then((response) => {
+        // Handle the response from the server
+        console.log("Response from server: done");
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the request
+        console.error("Error:", error);
+        setIsSendType(false);
+      });
+    
     try {
       const response_status = await axios.get('http://127.0.0.1:5000/get_status');
-      setIsCheckOn(response_status.data['status']);
-      console.log( response_status.data)
+      setIsCheckOn(response_status.data['msg']);
+      console.log(response_status.data)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
     
-    if (setIsCheckOn == 'on' && isCheckOn == 'off') {
+    if ( isCheckOn == 'on') {
       //openPylonbutton
       alert('The device is ready');
-    } else if (isCheckOn == 'on'){
+    } else if (isCheckOn == 'off') {
+      alert('You have not connect to the device');
+    } else {
       //closePylonbutton
       alert('The device is now closed');
-    } else {
-      alert('You have not connect to the device');
     };
   };
-*/
-  };
-  //usestate for taking photo 
-   const [dataPic, setdataPic] = useState({dataPic:[]});
-   const takingPic = async () => {
 
-   }; 
+  //usestate for taking photo 
+   const [dataPic, setdataPic] = useState('');
+   const takingPic = async () => {
+    axios
+    .post("http://127.0.0.1:5000/publish", {msg:'isTaken'})
+    .then((response_pic) => {
+      // Handle the response from the server
+      console.log("Picture from server is sent");
+    })
+    .catch((error) => {
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+      setIsSendType(false);
+    });
+
+    try {
+      const response_pic = await axios.get('http://127.0.0.1:5000/get_recent_captured_photo');
+
+      if (response_pic.data && response_pic.data.img_binary) {
+        const base64Image = response_pic.data.img_binary;
+        setdataPic(base64Image);
+      } else {
+        throw new Error('Invalid response from the server');
+      }
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+
+  };
   
   //confirm
-  const [usePic, setusePic] = useState(false);
-  const confirmPic = async () => {
+  const [dataResult, setdataResult] = useState('');
+  const [dataNom, setdataNom] = useState('');
+  const [dataH, setdataH] = useState('');
+  const [dataK, setdataK] = useState('');
+  const [dataL, setdataL] = useState('');
+  const [dataTL, setdataTL] = useState('');
+  const [dataSL, setdataSL] = useState('');
 
+  const confirmPic = async () => {
+    axios
+    .post("http://127.0.0.1:5000/publish", {msg:'isProcessed'})
+    .then((response_result) => {
+      // Handle the response from the server
+      console.log("Processed image from server:", response_result.data);
+    })
+    .catch((error) => {
+      // Handle any errors that occur during the request
+      console.error("Error:", error);
+      
+    });
+
+    try {
+      const response_processing = await axios.get('http://127.0.0.1:5000/get_processing');
+      console.log('get_data',response_processing.data);
+      const dataresult = response_processing.data;
+      setdataNom(dataresult['M_Size'])
+      setdataH(dataresult['Head_Diameter'])
+      setdataK(dataresult['Head_Length'])
+      setdataTL(dataresult['Thread_Length'])
+      setdataSL(dataresult['Space_Length'])
+      //console.log(response_pic.data)
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+ 
   };
 
   //retake
   function reTake() {
+    setdataPic('')
+    setdataNom('')
+    setdataH('')
+    setdataK('')
+    setdataTL('')
+    setdataSL('')
 
   };
 
   // use state to exporting to 
-  const [data3D, setData3D] = useState({data3D: []});
+  const [data3D, setData3D] = useState({});
   const [isSendType, setIsSendType] = useState(false);
   const [isLoading3D, setIsLoading3D] = useState(false);
   const [err, setErr] = useState('');
@@ -80,7 +151,6 @@ const ScrewyDisplay = () => {
       .post("http://127.0.0.1:5000/combine_and_store_data", requestData)
       .then((response) => {
         // Handle the response from the server
-        console.log("Response from server:", response.data);
         setIsSendType(false);
       })
       .catch((error) => {
@@ -88,7 +158,27 @@ const ScrewyDisplay = () => {
         console.error("Error:", error);
         setIsSendType(false);
       });
+
+    try {
+        const response_glink = await axios.get('http://127.0.0.1:5000/get_GoogleLink');
+        console.log('get_data',response_glink.data);
+        setData3D(response_glink.data['link'])
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+
     };
+
+    //click see result process
+
+    const screwy_3d = document.querySelector(".three_d");
+    const [showscrew3d, setshowscrew3d] = useState(false);
+    
+    const Showscrew3d = event => {
+       setshowscrew3d(current => !current);
+    
+      };
+      
 
   return (
     <div className="plugin-file-cover-1">
@@ -97,9 +187,14 @@ const ScrewyDisplay = () => {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
       </div>
       <div className="aboutUs">About Us</div>
-      <div className="choosePicture" />
+      <div className="choosePicture" >
+        <img className= 'showphoto' src={`data:image/jpeg;base64, ${dataPic}`} alt=""/>
+      </div>  
       <div className="show3D"> 
-        <button className="clicksee">click here to see 3D model result</button>
+        <button className="clicksee" onClick={Showscrew3d}>show 3D model</button>
+        {showscrew3d && (
+         <ModelViewer  scale={0.1} modelPath={'../Bolt_ID38.glb'} className='three_d' />
+      )}
       </div>
       <div className="toImage">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -113,12 +208,12 @@ const ScrewyDisplay = () => {
         <div className="convertingTo">Converting 2D to 3D</div>
       </div>
       <div className="dimension">
-        <div className= "nom"></div>
-        <div className = "h"></div>
-        <div className = "k"></div>
-        <div className = "l"></div>
-        <div className = "tl"></div>
-        <div className = "sl"></div>
+        <div className= "nom">M {dataNom} </div>
+        <div className = "h">{dataH} mm.</div>
+        <div className = "k">{dataK} mm.</div>
+        <div className = "l">{dataL} mm.</div>
+        <div className = "tl">{dataTL} mm.</div>
+        <div className = "sl">{dataSL} mm.</div>
       </div>
       <div className="load">
         <button className="exportingTo" onClick={exportClick} >Export to 3D model</button>
@@ -126,7 +221,7 @@ const ScrewyDisplay = () => {
       <div className="loadTol">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
         <b className="clickto">click below to download</b>
-        <a className="Download" href="https://www.w3schools.com" target="_blank"><i className="fa fa-download"></i> Download</a>
+        <a className="Download" href={data3D} target="_blank"><i className="fa fa-download"></i> Download</a>
       </div>
       
       <div className="custom-select-frame">
@@ -168,3 +263,4 @@ const ScrewyDisplay = () => {
 
 
 export default ScrewyDisplay;
+
