@@ -1,90 +1,75 @@
 import "./ScrewyDisplay.css";
-import axios from 'axios';
-import React,{ useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import ModelViewer from './ModelViewer';
-import image from './pinbg.jpg'
+import image from './pinbg.jpg';
 
 const ScrewyDisplay = () => {
-
-  //usestate for camera status
+  // use state for camera status
   const [isCheckOn, setIsCheckOn] = useState('off');
 
   const isPylonOn = async () => {
-
-    const status_next = ''
-   
-    axios
-      .post("http://127.0.0.1:5000/publish", {msg:'isOn'})
-      .then((response) => {
-        // Handle the response from the server
-        console.log("Response from server: done");
-      })
-      .catch((error) => {
-        // Handle any errors that occur during the request
-        console.error("Error:", error);
-
-      });
-    
     try {
-      const response_status = await axios.get('http://127.0.0.1:5000/get_status');
-      const status_next = response_status.data['msg'];
-      console.log(response_status.data)
-      setIsCheckOn(status_next)
+      // Send POST request using fetch
+      await fetch("http://127.0.0.1:5000/publish", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ msg: 'isOn' }),
+      });
 
+      // Send GET request using fetch
+      const response_status = await fetch('http://127.0.0.1:5000/get_status');
+      const status_next = (await response_status.json()).msg;
+      console.log(status_next);
+      setIsCheckOn(status_next);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error:', error);
     }
-    
-    if (isCheckOn == 'on') {
-      //openPylonbutton
+
+    if (isCheckOn === 'on') {
       alert('The device is ready');
-    } else if (isCheckOn == 'off') {
+    } else if (isCheckOn === 'off') {
       alert('The device is now closed');
     } else {
-      //closePylonbutton
-      alert('You have not connect to the device');
-    };
+      alert('You have not connected to the device');
+    }
   };
 
-  //usestate for taking photo 
-   const [dataPic, setdataPic] = useState({});
-   const [showscrew2d, setshowscrew2d] = useState(false);
+  // use state for taking photo
+  const [dataPic, setdataPic] = useState({});
+  const [showscrew2d, setshowscrew2d] = useState(false);
 
-   const takingPic = async () => {
-
-    setshowscrew2d(current => true);
-
-    axios
-    .post("http://127.0.0.1:5000/publish", {msg:'isTaken'})
-    .then((response_pic) => {
-      // Handle the response from the server
-      console.log("Picture from server is sent");
-    })
-    .catch((error) => {
-      // Handle any errors that occur during the request
-      console.error("Error:", error);
-
-    });
+  const takingPic = async () => {
+    setshowscrew2d(true);
 
     try {
-      const response_pic = await axios.get('http://127.0.0.1:5000/get_recent_captured_photo');
+      // Send POST request using fetch
+      await fetch("http://127.0.0.1:5000/publish", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ msg: 'isTaken' }),
+      });
 
-      if (response_pic.data && response_pic.data.img_binary) {
-        const base64Image = response_pic.data.img_binary;
+      // Send GET request using fetch
+      const response_pic = await fetch('http://127.0.0.1:5000/get_recent_captured_photo');
+      const responseData = await response_pic.json();
+
+      if (responseData && responseData.img_binary) {
+        const base64Image = responseData.img_binary;
         setdataPic(base64Image);
       } else {
         throw new Error('Invalid response from the server');
       }
-
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-
   };
-  
-  //confirm picture to processed
 
-  const [ choosedScrew2d, setChoosedScrew2d] = useState(false);
+  // confirm picture to processed
+  const [choosedScrew2d, setChoosedScrew2d] = useState(false);
 
   const [dataNom, setdataNom] = useState('');
   const [dataH, setdataH] = useState('');
@@ -93,93 +78,88 @@ const ScrewyDisplay = () => {
   const [dataSL, setdataSL] = useState('');
 
   const confirmPic = async () => {
-
-    setChoosedScrew2d(current => true);
-   
-    axios
-    .post("http://127.0.0.1:5000/publish", {msg:'isProcessed'})
-    .then((response_result) => {
-      // Handle the response from the server
-      console.log("Processed image from server:", response_result.data);
-    })
-    .catch((error) => {
-      // Handle any errors that occur during the request
-      console.error("Error:", error);
-      
-    });
+    setChoosedScrew2d(true);
 
     try {
-      const response_processing = await axios.get('http://127.0.0.1:5000/get_processing');
-      console.log('get_data',response_processing.data);
-      const dataresult = response_processing.data;
-      setdataNom(dataresult['M_Size'])
-      setdataH(dataresult['Head_Diameter'])
-      setdataK(dataresult['Head_Length'])
-      setdataTL(dataresult['Thread_Length'])
-      setdataSL(dataresult['Space_Length'])
-      //console.log(response_pic.data)
+      // Send POST request using fetch
+      await fetch("http://127.0.0.1:5000/publish", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ msg: 'isProcessed' }),
+      });
+
+      // Send GET request using fetch
+      const response_processing = await fetch('http://127.0.0.1:5000/get_processing');
+      const dataresult = await response_processing.json();
+
+      setdataNom(dataresult['M_Size']);
+      setdataH(dataresult['Head_Diameter']);
+      setdataK(dataresult['Head_Length']);
+      setdataTL(dataresult['Thread_Length']);
+      setdataSL(dataresult['Space_Length']);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
- 
   };
 
-  //retake photo - clear all infomation
+  // retake photo - clear all information
   function reTake() {
-    setshowscrew2d(current => false);
-    setChoosedScrew2d(current => false);
-    //setIsLoading3D(current => false);
-    setdataPic('')
-    setdataNom('')
-    setdataH('')
-    setdataK('')
-    setdataTL('')
-    setdataSL('')
-
-  };
+    setshowscrew2d(false);
+    setChoosedScrew2d(false);
+    setshowdownload3D(current => false)
+    setdataPic('');
+    setdataNom('');
+    setdataH('');
+    setdataK('');
+    setdataTL('');
+    setdataSL('');
+  }
 
   // use state to exporting to 
   const [data3D, setData3D] = useState('');
+  const [isloading3D, setloading3D] = useState(false);
+  const [showdownload3D,setshowdownload3D] = useState(false);
+  
   const [err, setErr] = useState('');
-
-
-  // Add a function for exportButton to send the POST request ans get GET request
+  
+  // Add a function for exportButton to send the POST request and get GET request
   const exportClick = async () => {
 
-    // Get the user selections from the dropdowns
-    const selectedHead = document.querySelector(".head-select select");
-    const selectedBit = document.querySelector(".bit-select select");
-
-    console.log('selection is sending')
-    // Create an object with the user selections
-    const requestData = {
-      type_head: selectedHead.options[selectedHead.selectedIndex].text,
-      type_bit: selectedBit.options[selectedBit.selectedIndex].text,
-    };
-    // Send a POST request to the backend
-    
-    axios
-      .post("http://127.0.0.1:5000/combine_and_store_data", requestData)
-      .then((response) => {
-        // Handle the response from the server
-        
-      })
-      .catch((error) => {
-        // Handle any errors that occur during the request
-        console.error("Error:", error);
-       
+    setshowdownload3D(current => true)
+    setloading3D(true)
+    try {
+      // Get the user selections from the dropdowns
+      const selectedHead = document.querySelector(".head-select select");
+      const selectedBit = document.querySelector(".bit-select select");
+  
+      // Create an object with the user selections
+      const requestData = {
+        type_head: selectedHead.options[selectedHead.selectedIndex].text,
+        type_bit: selectedBit.options[selectedBit.selectedIndex].text,
+      };
+  
+      // Send POST request using fetch
+      await fetch("http://127.0.0.1:5000/combine_and_store_data", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
       });
-
-      try {
-          const response_glink = await axios.get('http://127.0.0.1:5000/get_GoogleLink');
-          console.log('get_data',response_glink.data);
-          setData3D(response_glink.data['link'])
-
-      } catch (error) {
-          console.error('Error fetching data:', error);
-      } 
-
-    };
+  
+      // Send GET request using fetch
+      const response_glink = await fetch('http://127.0.0.1:5000/get_GoogleLink');
+      const responseData = await response_glink.json();
+      console.log('get_data', responseData);
+      setData3D(responseData.link);
+      setloading3D(false)
+    } catch (error) {
+      console.error('Error:', error);
+      setErr('An error occurred while processing your request');
+    }
+  };
 
     //click see result process
     const screwy_3d = document.querySelector(".three_d");
@@ -188,7 +168,6 @@ const ScrewyDisplay = () => {
        setshowscrew3d(current => !current);
     }
     
-      
 
   return (
     <div className="plugin-file-cover-1" >
@@ -231,9 +210,15 @@ const ScrewyDisplay = () => {
         <button className="exportingTo" onClick={exportClick} >Export to 3D model</button>
       </div>
       <div className="loadTol">
-              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-              <b className="clickto">click below to download</b>
-              <a className="Download" target="_blank" href={data3D} ><i className="fa fa-download"></i> Download</a>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        { showdownload3D && ( isloading3D ? (<i id='loady' className="fa fa-refresh fa-spin"></i>) :
+        (
+        <div>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+                <b className="clickto">click below to download</b>
+                <a className="Download" target="_blank" href={data3D} ><i className="fa fa-download"></i> Download</a>
+        </div> 
+        ))}
       </div>
       
       <div className="custom-select-frame">
