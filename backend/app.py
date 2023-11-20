@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify , send_from_directory
 from pymongo import MongoClient
 from flask_cors import CORS
-from flask_mqtt import Mqtt 
+from googleLoader import download_file_from_google_drive, extract_file_id_from_google_drive_url
 import base64
-
+import os
+from flask_mqtt import Mqtt 
+from pymongo import MongoClient
      
 app = Flask(__name__)
 client = MongoClient('mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/')  # Adjust MongoDB connection details
@@ -134,12 +136,26 @@ def result_processed_data():
 @app.route("/get_GoogleLink", methods=["GET"])
 def get_GoogleLink():
     try:
-        recent_link = GoogleLink.find_one(sort=[("Timestamp", -1)])
-        print('recieve link',recent_link)
-        return jsonify(recent_link)
+        recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
+
+        if recent_link:
+            file_id = extract_file_id_from_google_drive_url(recent_link["link"])
+            if file_id:
+                folder_path = r"./server/temp"
+                destination = os.path.join(folder_path, "downloaded.glb")
+
+                file_url = f"https://drive.google.com/uc?id={file_id}&export=download"
+
+                download_file_from_google_drive(file_url, destination)
+
+                send_from_directory(folder_path, "downloaded.glb", as_attachment=True)
+                
+                return jsonify(recent_link)
+
+        return jsonify({"message": "No Google Drive link found."})
+
     except Exception as e:
         return jsonify({"error": str(e)})
-
 
 
 # mqtt publish (recieve button command from front-end then pub)
