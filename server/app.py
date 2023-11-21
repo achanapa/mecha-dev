@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify , send_from_directory
 from pymongo import MongoClient
 from flask_cors import CORS
-from googleLoader import download_file_from_google_drive, extract_file_id_from_google_drive_url
+from googleLoader import download_from_google_drive, extract_file_id_from_google_drive_url
 import base64
 import os
 from flask_mqtt import Mqtt 
@@ -161,7 +161,7 @@ def get_downloadglb():
 
                 file_url = f"https://drive.google.com/uc?id={file_id}&export=download"
 
-                download_file_from_google_drive(file_url, destination)
+                download_from_google_drive(file_url, destination)
 
          return jsonify({'from flask': 'success to reload' })
         
@@ -174,9 +174,7 @@ def get_downloadglb():
 def serve_glb(filename):
     root_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(os.path.join(root_dir, 'downloaded.glb'), filename)
-
     
-
 
 # mqtt publish (recieve button command from front-end then pub)
 @app.route('/publish', methods=['GET','POST'])
@@ -184,8 +182,6 @@ def mqtt_publish_bham():
     if request.method == 'POST':
         message =  request.json['msg']
         mqtt.publish(topic_pub, message)
-       # message = request.get_json()
-        #mqtt.publish(topic_pub, message['msg'])
         print('pub'+message)
     return jsonify({'msg':'Message Publish'}) 
 
