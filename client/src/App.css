@@ -3,12 +3,16 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 
+<<<<<<< HEAD
 .Test{
   position: absolute;
   top: 0px;
   left:50%;
 
 }
+=======
+
+>>>>>>> emer
 
 body {
   margin: 0;
@@ -89,6 +93,15 @@ body {
   background-color: aliceblue;
 }
 
+<<<<<<< HEAD
+=======
+.model_3d{
+  position: absolute;
+  top: 400px;
+  left: 400px;
+}
+
+>>>>>>> emer
 :root {
   /* fonts */
   --font-urbanist: Urbanist;
