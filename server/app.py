@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify , send_from_directory
 from pymongo import MongoClient
 from flask_cors import CORS
-from googleLoader import download_file_from_google_drive, extract_file_id_from_google_drive_url
+from googleLoader import download_from_google_drive, extract_file_id_from_google_drive_url
 import base64
 import os
 from flask_mqtt import Mqtt 
@@ -20,7 +20,7 @@ GoogleLink = db["GoogleLink"]
 Captured = db["Captured"]
 
 
-#mqtt
+#setup mqtt
 app.config['MQTT_BROKER_URL'] = '161.200.84.240'  # broker 
 app.config['MQTT_BROKER_PORT'] = 1883  # default port for non-tls connection
 app.config['MQTT_USERNAME'] = 'cps'  # set the username here if you need authentication for the broker
@@ -52,14 +52,11 @@ def get_status():
 def get_recent_captured_photo():
     try:
         time.sleep(4)
-        # Assuming you're using PyMongo to interact with MongoDB
         recent_captured_photo = db.Captured.find_one(sort=[("Timestamp", -1)])
 
         if recent_captured_photo:
-            # Remove the MongoDB _id field, if needed
             recent_captured_photo.pop("_id", None)
 
-            # Encode the binary image data as a base64-encoded string
             img_binary = recent_captured_photo.get("img_binary")
             if img_binary:
                 encoded_image = base64.b64encode(img_binary).decode("utf-8")
@@ -161,7 +158,7 @@ def get_downloadglb():
 
                 file_url = f"https://drive.google.com/uc?id={file_id}&export=download"
 
-                download_file_from_google_drive(file_url, destination)
+                download_from_google_drive(file_url, destination)
 
          return jsonify({'from flask': 'success to reload' })
         
@@ -175,21 +172,18 @@ def serve_glb(filename):
     root_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(os.path.join(root_dir, 'downloaded.glb'), filename)
 
-    
 
-
-# mqtt publish (recieve button command from front-end then pub)
+# pub message
 @app.route('/publish', methods=['GET','POST'])
 def mqtt_publish_bham():
     if request.method == 'POST':
         message =  request.json['msg']
         mqtt.publish(topic_pub, message)
-       # message = request.get_json()
-        #mqtt.publish(topic_pub, message['msg'])
         print('pub'+message)
     return jsonify({'msg':'Message Publish'}) 
 
-# example mqtt subscribe in general
+
+# sub message
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
    if rc == 0:
