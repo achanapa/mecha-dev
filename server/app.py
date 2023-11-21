@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify , send_from_directory
 from pymongo import MongoClient
 from flask_cors import CORS
-import googleLoader as gg
+from googleLoader import download_file_from_google_drive, extract_file_id_from_google_drive_url
 import base64
 import os
 from flask_mqtt import Mqtt 
 from pymongo import MongoClient
+import time
      
 app = Flask(__name__)
 client = MongoClient('mongodb+srv://mechatronics:BhamAomNunEarn@dimension.i10gagw.mongodb.net/')  # Adjust MongoDB connection details
@@ -32,12 +33,16 @@ topic_pub = '/mqtt/toPi1'
 topic_sub = '/mqtt/fromPi1'
 
 mssg = [] 
+latest_data = None
 
 #get status
 @app.route("/get_status", methods=["GET"])
 def get_status():
     try:
-        recieve_data = {'msg': mssg[0]}
+        time.sleep(1)
+        global latest_data
+        #mssg[-1]
+        recieve_data = {'msg': latest_data}
         return jsonify(recieve_data)
 
     except Exception as e:
@@ -46,6 +51,7 @@ def get_status():
 @app.route("/get_recent_captured_photo", methods=["GET"])
 def get_recent_captured_photo():
     try:
+        time.sleep(4)
         # Assuming you're using PyMongo to interact with MongoDB
         recent_captured_photo = db.Captured.find_one(sort=[("Timestamp", -1)])
 
@@ -79,43 +85,43 @@ def get_recent_bolt_data():
 @app.route("/combine_and_store_data",methods=["GET", "POST"])
 def combine_and_store_data():
     try:
-        # user_selections = request.json
-        recieve_data = None
-
         if request.method == 'POST':
             user_selections = request.json
-            print("Received data:", user_selections)       
+            print("Received data:", user_selections)    
+        
 
+            
         recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
         combined_data = {
-            "_id": recent_bolt_data["_id"],
-            "Timestamp": recent_bolt_data["Timestamp"],
-            "M_Size": recent_bolt_data["M_Size"],
-            "Head_Length": recent_bolt_data["Head_Length"],
-            "Thread_Length": recent_bolt_data["Thread_Length"],
-            "Head_Diameter": recent_bolt_data["Head_Diameter"],
-            "Thread_Diameter": recent_bolt_data["Thread_Diameter"],
-            "Space_Length": recent_bolt_data["Space_Length"],
-            "type_head": user_selections["type_head"],
-            "type_bit": user_selections["type_bit"]
-        }
-
+                "_id": recent_bolt_data["_id"],
+                "Timestamp": recent_bolt_data["Timestamp"],
+                "M_Size": recent_bolt_data["M_Size"],
+                "Head_Length": recent_bolt_data["Head_Length"],
+                "Thread_Length": recent_bolt_data["Thread_Length"],
+                "Head_Diameter": recent_bolt_data["Head_Diameter"],
+                "Thread_Diameter": recent_bolt_data["Thread_Diameter"],
+                "Space_Length": recent_bolt_data["Space_Length"],
+                "type_head": user_selections["type_head"],
+                "type_bit": user_selections["type_bit"]
+            }
         BoltBitHead.insert_one(combined_data)
-
+        print(combined_data)
+        
         return jsonify(combined_data)
     
     except Exception as e:
         return jsonify({"error": str(e)})
     
 
-
 @app.route("/get_processing",methods=["GET", "POST"])
 def result_processed_data():
     try:
         if request.method == 'POST':
             user_selections = request.json
-            print("Received data:", user_selections)       
+            print("Received data:", user_selections)     
+
+        time.sleep(2)
 
         recent_bolt_data = Bolt_Dimension.find_one(sort=[("Timestamp", -1)])
 
@@ -135,27 +141,41 @@ def result_processed_data():
 
 @app.route("/get_GoogleLink", methods=["GET"])
 def get_GoogleLink():
-    try:
-        recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
-
-        if recent_link:
-            file_id = gg.extract_file_id_from_google_drive_url(recent_link["link"])
-            if file_id:
-                folder_path = r"./server/temp"
+        try: 
+         time.sleep(50)
+         recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
+         return jsonify(recent_link)
+        
+        except Exception as e:     
+         return jsonify({"error": str(e)})
+        
+@app.route("/downloaded.glb", methods=["GET"])
+def get_downloadglb():
+        try: 
+         recent_link = GoogleLink.find_one(sort=[("timestamp", -1)])
+         file_id = extract_file_id_from_google_drive_url(recent_link["link"])
+         print(file_id)
+         if file_id:
+                folder_path = r"./client/public/temp"
                 destination = os.path.join(folder_path, "downloaded.glb")
 
                 file_url = f"https://drive.google.com/uc?id={file_id}&export=download"
 
-                gg.download_file_from_google_drive(file_url, destination)
+                download_file_from_google_drive(file_url, destination)
 
-                send_from_directory(folder_path, "downloaded.glb", as_attachment=True)
-                
-                return jsonify(recent_link)
+         return jsonify({'from flask': 'success to reload' })
+        
+        except Exception as e:     
+         return jsonify({"error": str(e)})
+        
 
-        return jsonify({"message": "No Google Drive link found."})
+# glb file      
+@app.route('/server/temp/downloaded.glb')
+def serve_glb(filename):
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    return send_from_directory(os.path.join(root_dir, 'downloaded.glb'), filename)
 
-    except Exception as e:
-        return jsonify({"error": str(e)})
+    
 
 
 # mqtt publish (recieve button command from front-end then pub)
@@ -183,11 +203,13 @@ def sub_message(client, userdata, message):
     data = dict(
        topic_sub=topic_sub,
        payload=message.payload.decode()
-  )
-    info=message.payload.decode()
-    mssg.append(info)
+    )
+    global latest_data
+    latest_data=message.payload.decode()
+    mssg.append(latest_data)
     print('Received message on topic: {topic_sub} with payload: {payload}'.format(**data))
     print(mssg)
+    return latest_data
     
 if __name__ == "__main__":
     app.run(debug = True)
