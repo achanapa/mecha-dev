@@ -9,7 +9,7 @@ from pymongo import MongoClient
 import time
      
 app = Flask(__name__)
-client = MongoClient('mongoURI')
+client = MongoClient('')
 CORS(app)
 
 # Define MongoDB collections
@@ -21,10 +21,10 @@ Captured = db["Captured"]
 
 
 #mqtt
-app.config['MQTT_BROKER_URL'] = '161.200.84.240'
+app.config['MQTT_BROKER_URL'] = ''
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = 'cps'
-app.config['MQTT_PASSWORD'] = 'password'
+app.config['MQTT_PASSWORD'] = ''
 app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
     
