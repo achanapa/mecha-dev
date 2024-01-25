@@ -12,7 +12,7 @@ app = Flask(__name__)
 client = MongoClient('')
 CORS(app)
 
-# Define MongoDB collections
+
 db = client['Dimension']
 Bolt_Dimension = db["Bolt_Dimension"]
 BoltBitHead = db["BoltBitHead"]
